@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+
+commands=(
+    download-candra
+    install-candra
+    install-candra-database
+    run
+)
+
+function run {(
+    databaseName="${1}"
+    filePath="$(realpath ${2})"
+    cd "$(get-candra-installation-path)"
+    perl "open_candra.pl" "${databaseName}" "${filePath}"
+)}
+
+function install-candra {(
+    [ -d "$(get-candra-installation-path)" ] && return 0
+
+    mkdir -p "$(get-candra-installation-path)"
+    candraPath="$(get-candra-path)"
+    (
+        cd "$(get-candra-installation-path)"
+        tar -xjf "$candraPath"
+        mv "./CanDrA.v+/"* .
+        rmdir "./CanDrA.v+/"
+        cd "./tabix-0.2.6"
+        make
+    )
+)}
+
+function install-candra-database {(
+    name="${1}"
+    [ -d "$(get-candra-database-installation-path "${name}")" ] && return 0
+
+    databasePath="$(get-candra-database-path "${name}")"
+    cd "$(get-candra-databases-installation-path)"
+    tar -xjf "${databasePath}"
+)}
+
+function download-candra {(
+    ensure-cache-dir
+    wget -nv --show-progress \
+        -O "$(realpath --relative-to="$(pwd)" "$(get-candra-path)")" \
+        "$(get-candra-url)"
+)}
+
+function ensure-cache-dir {(
+    mkdir -p "$(get-cache-dir-path)"
+)}
+
+function ensure-installation-dir {(
+    mkdir -p "$(get-installation-dir-path)"
+)}
+
+function get-candra-url {(
+    echo "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/CanDrA.v%2B.tar.bz2"
+)}
+
+function get-candra-installation-path {(
+    echo "$(get-installation-dir-path)/candra-plus"
+)}
+
+function get-candra-database-installation-path {(
+    name="${1}"
+    echo "$(get-candra-databases-installation-path)/${name}"
+)}
+
+function get-candra-databases-installation-path {(
+    echo "$(get-installation-dir-path)/candra-plus/database/"
+)}
+
+function get-candra-path {(
+    echo "$(get-cache-dir-path)/candra-plus.tar.bz2"
+)}
+
+function get-candra-database-path {(
+    name="${1}"
+    echo "$(get-cache-dir-path)/database_${name}.tar.bz2"
+)}
+
+function get-cache-dir-path {(
+    echo "$(pwd)/cache"
+)}
+
+function get-installation-dir-path {(
+    echo "$(pwd)/installation"
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function help {
+    printf "%s\n" "Available commands:"
+    printf " %s\n" "${commands[@]}" help
+}
+
+function run-command {
+    command="$1"
+    args=("${@:2}")
+    for c in "${commands[@]}"; do
+        if [ "$c" = "$command" ]; then
+            ("$command" "${args[@]}")
+            return
+        fi
+    done
+    printf "%s\n" "Command '${command}' does not exist."
+}
+
+set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")"
+[ -z "${1:-""}" ] || [ "${1:-""}" = "help" ] && help && exit 0
+run-command "${1}" "${@:2}"
