@@ -1,0 +1,4 @@
+{
+    "GENERAL": ["Cancer-In-General", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/GENERAL.tar.bz2"],
+    "BRCA": ["Breast Cancer", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/BRCA.tar.bz2"]
+}

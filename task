@@ -3,15 +3,18 @@
 commands=(
     download-candra
     install-candra
+
+    list-candra-databases
+    download-candra-database
     install-candra-database
     run
 )
 
-function run {(
-    databaseName="${1}"
-    filePath="$(realpath ${2})"
-    cd "$(get-candra-installation-path)"
-    perl "open_candra.pl" "${databaseName}" "${filePath}"
+function download-candra {(
+    ensure-cache-dir
+    wget -nv --show-progress \
+        -O "$(realpath --relative-to="$(pwd)" "$(get-candra-path)")" \
+        "$(get-candra-url)"
 )}
 
 function install-candra {(
@@ -29,6 +32,16 @@ function install-candra {(
     )
 )}
 
+function list-candra-databases {(
+    while read key; do
+        echo "[$key]"
+    done <<< "$(get-candra-available-databases)"
+)}
+
+function download-candra-database {(
+    echo "Hehe"
+)}
+
 function install-candra-database {(
     name="${1}"
     [ -d "$(get-candra-database-installation-path "${name}")" ] && return 0
@@ -38,12 +51,28 @@ function install-candra-database {(
     tar -xjf "${databasePath}"
 )}
 
-function download-candra {(
-    ensure-cache-dir
-    wget -nv --show-progress \
-        -O "$(realpath --relative-to="$(pwd)" "$(get-candra-path)")" \
-        "$(get-candra-url)"
+function run {(
+    databaseName="${1}"
+    filePath="$(realpath ${2})"
+    cd "$(get-candra-installation-path)"
+    perl "open_candra.pl" "${databaseName}" "${filePath}"
 )}
+
+
+
+## DATABASES ##
+
+function get-candra-available-databases {(
+    cat "$(pwd)/src/databases.json" | jq -r 'keys[]'
+)}
+
+## URLS ##
+
+function get-candra-url {(
+    echo "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/CanDrA.v%2B.tar.bz2"
+)}
+
+## PATHS ##
 
 function ensure-cache-dir {(
     mkdir -p "$(get-cache-dir-path)"
@@ -51,10 +80,6 @@ function ensure-cache-dir {(
 
 function ensure-installation-dir {(
     mkdir -p "$(get-installation-dir-path)"
-)}
-
-function get-candra-url {(
-    echo "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/CanDrA.v%2B.tar.bz2"
 )}
 
 function get-candra-installation-path {(
@@ -86,9 +111,6 @@ function get-cache-dir-path {(
 function get-installation-dir-path {(
     echo "$(pwd)/installation"
 )}
-
-
-
 
 
 
