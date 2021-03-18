@@ -2,53 +2,68 @@
 
 commands=(
     download-candra
-    install-candra
 
-    list-candra-databases
-    download-candra-database
-    install-candra-database
+    list-db
+    download-db
+
+    prepare
     run
 )
 
 function download-candra {(
     ensure-cache-dir
-    wget -nv --show-progress \
+    wget -nv --show-progress --continue \
         -O "$(realpath --relative-to="$(pwd)" "$(get-candra-path)")" \
         "$(get-candra-url)"
 )}
 
-function install-candra {(
-    [ -d "$(get-candra-installation-path)" ] && return 0
-
-    mkdir -p "$(get-candra-installation-path)"
-    candraPath="$(get-candra-path)"
-    (
-        cd "$(get-candra-installation-path)"
-        tar -xjf "$candraPath"
-        mv "./CanDrA.v+/"* .
-        rmdir "./CanDrA.v+/"
-        cd "./tabix-0.2.6"
-        make
-    )
-)}
-
-function list-candra-databases {(
+function list-db {(
+    printf "%s\n" "* = downloaded" ""
     while read key; do
-        echo "[$key]"
+        if [ -d "$(get-cache-dir-path)/databases/${key}" ]; then
+            printf "%s" "* "
+        else
+            printf "%s" "  "
+        fi
+        printf "%s: %s\n" "${key}" "$(get-candra-database-description "${key}")"
     done <<< "$(get-candra-available-databases)"
 )}
 
-function download-candra-database {(
-    echo "Hehe"
+function download-db {(
+    name="${1}"
+    [ -d "$(get-cache-dir-path)/databases/${name}" ] && return 0
+
+    mkdir -p "$(get-cache-dir-path)/databases"
+    databasePath="$(get-cache-dir-path)/databases/${name}.tar.bz2"
+    wget -nv --show-progress --continue \
+        -O "$(realpath --relative-to="$(pwd)" "${databasePath}")" \
+        "$(get-candra-database-url "${name}")"
+
+    cd "$(get-cache-dir-path)/databases"
+    tar -xjf "${databasePath}"
 )}
 
-function install-candra-database {(
-    name="${1}"
-    [ -d "$(get-candra-database-installation-path "${name}")" ] && return 0
+function prepare {(
+    if [ ! -d "$(get-candra-installation-path)" ]; then
+        mkdir -p "$(get-candra-installation-path)"
+        candraPath="$(get-candra-path)"
+        (
+            cd "$(get-candra-installation-path)"
+            tar -xjf "$candraPath"
+            mv "./CanDrA.v+/"* .
+            rmdir "./CanDrA.v+/"
+            cd "./tabix-0.2.6"
+            make
+        )
+    fi
+    rm -rf "$(get-candra-installation-path)/database"
+    mkdir "$(get-candra-installation-path)/database"
 
-    databasePath="$(get-candra-database-path "${name}")"
-    cd "$(get-candra-databases-installation-path)"
-    tar -xjf "${databasePath}"
+    while read name; do
+        if [ -d "$(get-cache-dir-path)/databases/${name}" ]; then
+            ln -s "$(get-cache-dir-path)/databases/${name}" "$(get-candra-installation-path)/database/${name}"
+        fi
+    done <<< "$(get-candra-available-databases)"
 )}
 
 function run {(
@@ -64,6 +79,16 @@ function run {(
 
 function get-candra-available-databases {(
     cat "$(pwd)/src/databases.json" | jq -r 'keys[]'
+)}
+
+function get-candra-database-description {(
+    name="${1}"
+    cat "$(pwd)/src/databases.json" | jq -r ".${name}[0]"
+)}
+
+function get-candra-database-url {(
+    name="${1}"
+    cat "$(pwd)/src/databases.json" | jq -r ".${name}[1]"
 )}
 
 ## URLS ##

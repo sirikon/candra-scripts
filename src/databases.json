@@ -1,4 +1,18 @@
 {
-    "GENERAL": ["Cancer-In-General", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/GENERAL.tar.bz2"],
-    "BRCA": ["Breast Cancer", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/BRCA.tar.bz2"]
+    "BLCA": ["Bladder Cancer", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/BLCA.tar.bz2"],
+    "BRCA": ["Breast Cancer", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/BRCA.tar.bz2"],
+    "CRC": ["Colorectal Cancer", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/CRC.tar.bz2"],
+    "CSCC": ["Cervical Squamous Cell Carcinoma", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/CSCC.tar.bz2"],
+    "EC": ["Endometrioid Carcinoma", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/EC.tar.bz2"],
+    "GBM": ["Glioblastoma Multiforme", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/GBM.tar.bz2"],
+    "KIRC": ["Kidney Cancer", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/KIRC.tar.bz2"],
+    "LUAD": ["Lung Adenocarcinoma", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/LUAD.tar.bz2"],
+    "LUSMACC": ["Lung Small Cell Carcinoma", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/LUSMACC.tar.bz2"],
+    "LUSQUCC": ["Lung Squamous Cell Carcinoma", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/LUSQUCC.tar.bz2"],
+    "MDB": ["Medulloblastoma", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/MDB.tar.bz2"],
+    "MEL": ["Malignant Melanoma", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/MEL.tar.bz2"],
+    "OVC": ["Ovarian Cancer", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/OVC.tar.bz2"],
+    "PRCA": ["Prostate Cancer", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/PRCA.tar.bz2"],
+    "SCSC": ["Squamous Cell Skin Cancer", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/SCSC.tar.bz2"],
+    "GENERAL": ["Cancer-In-General", "http://bioinformatics.mdanderson.org/Software/CanDrA/v%2B/GENERAL.tar.bz2"]
 }
